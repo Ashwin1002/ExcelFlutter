@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
-import 'package:file_picker_writable/file_picker_writable.dart';
+import 'package:excel_export_flutter_app/toast_message.dart';
+import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart' as sysPath;
-import 'package:path/path.dart' as path;
 
 import 'alert_dialog.dart';
 
@@ -46,15 +46,14 @@ class _MyHomePageState extends State<MyHomePage> {
       //store file in documents folder
       //var fileBytes = excel.save();
       String dir = Platform.isAndroid
-          ? "/storage/emulated/0/Download/$fileName.csv" //Android
+          ? "${await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS)}/$fileName.csv" //Android
           : "${(await sysPath.getApplicationDocumentsDirectory()).path}/$fileName.csv"; //Ios
       String file = dir;
       File f = File(file);
+      debugPrint("android path => $dir");
       debugPrint(
           "${(await sysPath.getApplicationDocumentsDirectory()).path}/$fileName.csv");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("File Downloaded"),
-      ));
+      ShowToast.successToast("File saved in $dir");
       /*..createSync(recursive: true)
         ..writeAsBytesSync(fileBytes ?? []);*/
       // convert rows to String and write as csv file
